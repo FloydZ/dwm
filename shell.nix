@@ -9,6 +9,7 @@ stdenv.mkDerivation rec {
     libX11
     libXinerama
     libXft
+    imlib2
     xorg.xorgserver
     clang
   ];
