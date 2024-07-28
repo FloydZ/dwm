@@ -1,0 +1,29 @@
+name: build
+
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04 ubuntu-20.04]
+        version: [ 11, 12, 13, 14, 15 ]
+        build_type: [Release, Debug]
+
+    name: Build & test on ${{ matrix.os }} with clang-${{ matrix.version }} in ${{ matrix.build_type }} mode.
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Install Software
+      run: |
+        sudo apt-get install -y libX11-dev libXinerama-dev libXft-def libimlib2 clang-${{matrix.version}}
+
+    - name: Make
+      env:
+        CXX: clang++-${{ matrix.version }}
+        CC: clang-${{ matrix.version }}
+      run: make
