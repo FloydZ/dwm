@@ -159,7 +159,7 @@ static const Key keys[] = {
     {MODKEY,                            XK_u,       spawn,
         SHCMD("maim --select | xclip -selection clipboard -t image/png")},
 
-    { MODKEY,                           XK_r,       spawn,          SHCMD("dmenu_run") },
+    { MODKEY,                           XK_r,       spawn,          {.v = dmenucmd }  },
     { MODKEY,                           XK_f,       spawn,          SHCMD("firefox")},
     { MODKEY,                           XK_Return,  spawn,          SHCMD("st")},
 

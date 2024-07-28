@@ -1,0 +1,29 @@
+name: build-gcc
+
+on: [push]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04 ubuntu-20.04]
+        version: [ 10, 11, 12 ]
+        build_type: [Release, Debug]
+
+    name: Build & test on ${{ matrix.os }} with gcc-${{ matrix.version }} in ${{ matrix.build_type }} mode.
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Install Software
+      run: |
+        sudo apt-get install -y libX11-dev libXinerama-dev libXft-def libimlib2 gcc-${{matrix.version}}
+
+    - name: Make
+      env:
+        CXX: gcc++-${{ matrix.version }}
+        CC: gcc-${{ matrix.version }}
+      run: make
