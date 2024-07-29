@@ -63,6 +63,10 @@ static const char *colors[][3]      = {
     [SchemeTag3]       = { orange,  black,  black },
     [SchemeTag4]       = { green,   black,  black },
     [SchemeTag5]       = { pink,    black,  black },
+    [SchemeTag6]       = { gray3,   black,  black },
+    [SchemeTag7]       = { blue,    black,  black },
+    [SchemeTag8]       = { red,     black,  black },
+    [SchemeTag9]       = { orange,  black,  black },
     [SchemeLayout]     = { green,   black,  black },
     [SchemeBtnPrev]    = { green,   black,  black },
     [SchemeBtnNext]    = { yellow,  black,  black },
@@ -159,10 +163,9 @@ static const Key keys[] = {
     {MODKEY,                            XK_u,       spawn,
         SHCMD("maim --select | xclip -selection clipboard -t image/png")},
 
-    //{ MODKEY,                           XK_r,       spawn,          {.v = dmenucmd }},
-    { MODKEY,                           XK_r,       spawn,          SHCMD("alacritty"}},
+    { MODKEY,                           XK_r,       spawn,          {.v = dmenucmd }},
     { MODKEY,                           XK_f,       spawn,          SHCMD("firefox")},
-    { MODKEY,                           XK_Return,  spawn,          SHCMD("st")},
+    { MODKEY,                           XK_Return,  spawn,          SHCMD("alacritty")},
 
     // toggle stuff
     { MODKEY,                           XK_b,       togglebar,      {0} },
