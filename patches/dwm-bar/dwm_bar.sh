@@ -47,7 +47,7 @@ export SEP2="]"
 parallelize() {
     while true
     do
-        printf "Running parallel processes\n"
+        # printf "Running parallel processes\n"
         dwm_networkmanager &
         #dwm_weather &
         sleep 60
