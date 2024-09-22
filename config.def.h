@@ -165,6 +165,8 @@ static const Key keys[] = {
 
     { MODKEY,                           XK_r,       spawn,          {.v = dmenucmd }},
     { MODKEY,                           XK_f,       spawn,          SHCMD("firefox")},
+    { MODKEY,                           XK_t,       spawn,          SHCMD("thunderbird")},
+    { MODKEY,                           XK_s,       spawn,          SHCMD("spacefm")},
     { MODKEY,                           XK_Return,  spawn,          SHCMD("alacritty")},
 
     // toggle stuff
@@ -221,7 +223,7 @@ static const Key keys[] = {
     { MODKEY|ControlMask|ShiftMask,     XK_d,       defaultgaps,    {0} },
 
     // layout
-    { MODKEY,                           XK_t,       setlayout,      {.v = &layouts[0]} },
+    // { MODKEY,                           XK_t,       setlayout,      {.v = &layouts[0]} },
     { MODKEY|ShiftMask,                 XK_f,       setlayout,      {.v = &layouts[1]} },
     { MODKEY,                           XK_m,       setlayout,      {.v = &layouts[2]} },
     { MODKEY|ControlMask,               XK_g,       setlayout,      {.v = &layouts[10]} },
