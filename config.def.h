@@ -42,10 +42,14 @@ static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute",   "0", "togg
 static const char *light_up[] = {"/usr/bin/light", "-A", "5", NULL};
 static const char *light_down[] = {"/usr/bin/light", "-U", "5", NULL};
 static const int new_window_attach_on_end = 0; /*  1 means the new window will attach on the end; 0 means the new window will attach on the front,default is front */
+
 #define ICONSIZE 19   /* icon size */
 #define ICONSPACING 8 /* space between icon and title */
 
-static const char *fonts[]          = {"Hack:medium:size=12" ,"JetBrainsMono Nerd Font Mono:style:medium:size=19" };
+static const char *fonts[]          = {
+    "Hack:medium:size=12",
+    "JetBrainsMono Nerd Font Mono:style:medium:size=19" 
+};
 
 // theme
 #include "themes/gruvchad.h"
@@ -105,7 +109,7 @@ static const Rule rules[] = {
 
 /* layout(s) */
 static const float mfact     = 0.50; /* factor of master area size [0.05..0.95] */
-static const int nmaster     = 1;    /* number of clients in master area */
+static const int nmaster     = 1;    /* number of clients in master armouseea */
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
 
@@ -151,9 +155,9 @@ static const Key keys[] = {
     /* modifier                         key         function        argument */
 
     // brightness and audio 
-    {0,             XF86XK_AudioLowerVolume,    spawn, {.v = downvol}},
-	{0,             XF86XK_AudioMute, spawn,    {.v = mutevol }},
-	{0,             XF86XK_AudioRaiseVolume,    spawn, {.v = upvol}},
+    {0,             XF86XK_AudioLowerVolume,    spawn,  {.v = downvol}},
+	{0,             XF86XK_AudioMute, spawn,            {.v = mutevol }},
+	{0,             XF86XK_AudioRaiseVolume,    spawn,  {.v = upvol}},
 	{0,				XF86XK_MonBrightnessUp,     spawn,	{.v = light_up}},
 	{0,				XF86XK_MonBrightnessDown,   spawn,	{.v = light_down}},
 
@@ -199,28 +203,28 @@ static const Key keys[] = {
     { MODKEY,                           XK_Tab,     view,           {0} },
 
     // overall gaps
-    { MODKEY|ControlMask,               XK_i,       incrgaps,       {.i = +1 } },
-    { MODKEY|ControlMask,               XK_d,       incrgaps,       {.i = -1 } },
+    // { MODKEY|ControlMask,               XK_i,       incrgaps,       {.i = +1 } },
+    // { MODKEY|ControlMask,               XK_d,       incrgaps,       {.i = -1 } },
 
     // inner gaps
-    { MODKEY|ShiftMask,                 XK_i,       incrigaps,      {.i = +1 } },
-    { MODKEY|ControlMask|ShiftMask,     XK_i,       incrigaps,      {.i = -1 } },
+    // { MODKEY|ShiftMask,                 XK_i,       incrigaps,      {.i = +1 } },
+    // { MODKEY|ControlMask|ShiftMask,     XK_i,       incrigaps,      {.i = -1 } },
 
     // outer gaps
-    { MODKEY|ControlMask,               XK_o,       incrogaps,      {.i = +1 } },
-    { MODKEY|ControlMask|ShiftMask,     XK_o,       incrogaps,      {.i = -1 } },
+    // { MODKEY|ControlMask,               XK_o,       incrogaps,      {.i = +1 } },
+    // { MODKEY|ControlMask|ShiftMask,     XK_o,       incrogaps,      {.i = -1 } },
 
     // inner+outer hori, vert gaps 
-    { MODKEY|ControlMask,               XK_6,       incrihgaps,     {.i = +1 } },
-    { MODKEY|ControlMask|ShiftMask,     XK_6,       incrihgaps,     {.i = -1 } },
-    { MODKEY|ControlMask,               XK_7,       incrivgaps,     {.i = +1 } },
-    { MODKEY|ControlMask|ShiftMask,     XK_7,       incrivgaps,     {.i = -1 } },
-    { MODKEY|ControlMask,               XK_8,       incrohgaps,     {.i = +1 } },
-    { MODKEY|ControlMask|ShiftMask,     XK_8,       incrohgaps,     {.i = -1 } },
-    { MODKEY|ControlMask,               XK_9,       incrovgaps,     {.i = +1 } },
-    { MODKEY|ControlMask|ShiftMask,     XK_9,       incrovgaps,     {.i = -1 } },
+    // { MODKEY|ControlMask,               XK_6,       incrihgaps,     {.i = +1 } },
+    // { MODKEY|ControlMask|ShiftMask,     XK_6,       incrihgaps,     {.i = -1 } },
+    // { MODKEY|ControlMask,               XK_7,       incrivgaps,     {.i = +1 } },
+    // { MODKEY|ControlMask|ShiftMask,     XK_7,       incrivgaps,     {.i = -1 } },
+    // { MODKEY|ControlMask,               XK_8,       incrohgaps,     {.i = +1 } },
+    // { MODKEY|ControlMask|ShiftMask,     XK_8,       incrohgaps,     {.i = -1 } },
+    // { MODKEY|ControlMask,               XK_9,       incrovgaps,     {.i = +1 } },
+    // { MODKEY|ControlMask|ShiftMask,     XK_9,       incrovgaps,     {.i = -1 } },
 
-    { MODKEY|ControlMask|ShiftMask,     XK_d,       defaultgaps,    {0} },
+    // { MODKEY|ControlMask|ShiftMask,     XK_d,       defaultgaps,    {0} },
 
     // layout
     // { MODKEY,                           XK_t,       setlayout,      {.v = &layouts[0]} },
@@ -234,7 +238,7 @@ static const Key keys[] = {
     { MODKEY|ShiftMask,                 XK_0,       tag,            {.ui = ~0 } },
     { MODKEY|ControlMask,               XK_j,       focusmon,       {.i = -1 } },
     { MODKEY|ControlMask,               XK_k,       focusmon,       {.i = +1 } },
-    { MODKEY,                           XK_o,   tagmon,         {.i = -1 } }	,
+    { MODKEY,                           XK_o,       tagmon,         {.i = -1 } },
     // { MODKEY|ShiftMask,                 XK_period,  tagmon,         {.i = +1 } },
 
     // change border size
@@ -252,8 +256,8 @@ static const Key keys[] = {
     { MODKEY|ShiftMask,                 XK_r,       restart,        {0} },
 
     // hide & restore windows
-    { MODKEY,                           XK_e,       hidewin,        {0} },
-    { MODKEY|ShiftMask,                 XK_e,       restorewin,     {0} },
+    // { MODKEY,                           XK_e,       hidewin,        {0} },
+    // { MODKEY|ShiftMask,                 XK_e,       restorewin,     {0} },
 
     TAGKEYS(                            XK_1,                       0)
     TAGKEYS(                            XK_2,                       1)
