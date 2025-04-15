@@ -53,6 +53,7 @@ static const char *fonts[]          = {
 
 // theme
 #include "themes/gruvchad.h"
+//TODO #include "themes/gruvbox_hard.h"
 
 static const char *colors[][3]      = {
     /*                     fg       bg      border */
