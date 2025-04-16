@@ -52,13 +52,13 @@ static const char *fonts[]          = {
 };
 
 // theme
-#include "themes/gruvchad.h"
-//TODO #include "themes/gruvbox_hard.h"
+// #include "themes/gruvchad.h"
+#include "themes/gruvbox_hard.h"
 
 static const char *colors[][3]      = {
     /*                     fg       bg      border */
     [SchemeNorm]       = { gray3,   black,  gray2 },
-    [SchemeSel]        = { gray4,   blue,   blue  },
+    [SchemeSel]        = { gray4,   blue,   orange  },
     [SchemeTitle]      = { white,   black,  black }, // active window title
     [TabSel]           = { blue,    gray2,  black },
     [TabNorm]          = { gray3,   black,  black },
