@@ -172,7 +172,7 @@ static const Key keys[] = {
     { MODKEY,                           XK_f,       spawn,          SHCMD("firefox")},
     { MODKEY,                           XK_t,       spawn,          SHCMD("thunderbird")},
     { MODKEY,                           XK_s,       spawn,          SHCMD("spacefm")},
-    { MODKEY,                           XK_Return,  spawn,          SHCMD("alacritty")},
+    { MODKEY,                           XK_Return,  spawn,          SHCMD("kitty")},
 
     // toggle stuff
     { MODKEY,                           XK_b,       togglebar,      {0} },
