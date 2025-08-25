@@ -195,7 +195,6 @@ static const Key keys[] = {
     { MODKEY,                           XK_l,       setmfact,       {.f = +0.05} },
     { MODKEY|ShiftMask,                 XK_h,       setcfact,       {.f = +0.25} },
     { MODKEY|ShiftMask,                 XK_l,       setcfact,       {.f = -0.25} },
-    { MODKEY|ShiftMask,                 XK_o,       setcfact,       {.f =  0.00} },
 
 
     { MODKEY|ShiftMask,                 XK_j,       movestack,      {.i = +1 } },
@@ -234,13 +233,17 @@ static const Key keys[] = {
     { MODKEY|ControlMask,               XK_g,       setlayout,      {.v = &layouts[10]} },
     { MODKEY|ControlMask|ShiftMask,     XK_t,       setlayout,      {.v = &layouts[13]} },
     { MODKEY,                           XK_space,   cyclelayout,    {.i = +1 } },
-    { MODKEY|ShiftMask,                 XK_comma,   cyclelayout,    {.i = -1 } },
+    { MODKEY|ShiftMask,                 XK_space,   cyclelayout,    {.i = -1 } },
     { MODKEY,                           XK_0,       view,           {.ui = ~0 } },
     { MODKEY|ShiftMask,                 XK_0,       tag,            {.ui = ~0 } },
+
     { MODKEY|ControlMask,               XK_j,       focusmon,       {.i = -1 } },
     { MODKEY|ControlMask,               XK_k,       focusmon,       {.i = +1 } },
+	{ MODKEY,                           XK_comma,   focusmon,       {.i = -1 } },
+	{ MODKEY,                           XK_period,  focusmon,       {.i = +1 } },
+
     { MODKEY,                           XK_o,       tagmon,         {.i = -1 } },
-    // { MODKEY|ShiftMask,                 XK_period,  tagmon,         {.i = +1 } },
+    { MODKEY|ShiftMask,                 XK_o,       tagmon,         {.i = +1 } },
 
     // change border size
     // { MODKEY|ShiftMask,                 XK_minus,   setborderpx,    {.i = -1 } },
