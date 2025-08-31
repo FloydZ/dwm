@@ -129,6 +129,8 @@ enum {
   NetWMWindowType,
   NetWMWindowTypeDock,
   NetWMWindowTypeDialog,
+  NetWMStrut,
+  NetWMStrutPartial,
   NetClientList,
   NetClientInfo,
   NetDesktopNames,
@@ -322,6 +324,7 @@ static void setnumdesktops(void);
 static void setup(void);
 static void setviewport(void);
 static void seturgent(Client *c, int urg);
+static void setstrut(Client *c);
 static void show(Client *c);
 static void showhide(Client *c);
 static void showtagpreview(int tag);
@@ -345,6 +348,7 @@ static void unmanage(Client *c, int destroyed);
 static void unmapnotify(XEvent *e);
 static void updatecurrentdesktop(void);
 static void updatebarpos(Monitor *m);
+static void updatestruts(void);
 static void updatebars(void);
 static void updatepreview(void);
 static void updateclientlist(void);
@@ -416,6 +420,7 @@ struct Monitor {
   char ltsymbol[16];
   float mfact;
   int nmaster;
+  int strut[12]; /* left, right, top, bottom, left_start_y, left_end_y, right_start_y, right_end_y, top_start_x, top_end_x, bottom_start_x, bottom_end_x */
   int num;
   int by;             /* bar geometry */
   int ty;             /* tab bar geometry */
@@ -944,6 +949,7 @@ Monitor *createmon(void) {
   size_t i;
 
   m = ecalloc(1, sizeof(Monitor));
+  memset(m->strut, 0, sizeof(m->strut));
   m->tagset[0] = m->tagset[1] = 1;
   m->mfact = mfact;
   m->nmaster = nmaster;
@@ -2066,6 +2072,7 @@ void manage(Window w, XWindowAttributes *wa) {
   configure(c); /* propagates border_width, if size doesn't change */
   updatewindowtype(c);
   updatesizehints(c);
+  setstrut(c);
   updatewmhints(c);
   	{
 		int format;
@@ -2482,6 +2489,12 @@ void propertynotify(XEvent *e) {
 
     if (ev->atom == netatom[NetWMWindowType])
       updatewindowtype(c);
+
+	if (ev->atom == netatom[NetWMStrut] || ev->atom == netatom[NetWMStrutPartial]) {
+		setstrut(c);
+		updatestruts();
+		arrange(NULL);
+	}
   }
 }
 
@@ -2885,6 +2898,60 @@ void setmfact(const Arg *arg) {
   arrange(selmon);
 }
 
+void
+setstrut(Client *c)
+{
+	long *data;
+	int format;
+	unsigned long nitems, bytes_after;
+	Atom type;
+	
+	/* Try _NET_WM_STRUT_PARTIAL first */
+	if (XGetWindowProperty(dpy, c->win, netatom[NetWMStrutPartial], 0, 12, False, XA_CARDINAL,
+	                      &type, &format, &nitems, &bytes_after, (unsigned char **)&data) == Success) {
+		if (nitems == 12 && format == 32) {
+			Monitor *m = c->mon;
+			m->strut[0] = data[0];  /* left */
+			m->strut[1] = data[1];  /* right */
+			m->strut[2] = data[2];  /* top */
+			m->strut[3] = data[3];  /* bottom */
+			m->strut[4] = data[4];  /* left_start_y */
+			m->strut[5] = data[5];  /* left_end_y */
+			m->strut[6] = data[6];  /* right_start_y */
+			m->strut[7] = data[7];  /* right_end_y */
+			m->strut[8] = data[8];  /* top_start_x */
+			m->strut[9] = data[9];  /* top_end_x */
+			m->strut[10] = data[10]; /* bottom_start_x */
+			m->strut[11] = data[11]; /* bottom_end_x */
+		}
+		XFree(data);
+		return;
+	}
+	
+	/* Fall back to _NET_WM_STRUT */
+	if (XGetWindowProperty(dpy, c->win, netatom[NetWMStrut], 0, 4, False, XA_CARDINAL,
+	                      &type, &format, &nitems, &bytes_after, (unsigned char **)&data) == Success) {
+		if (nitems == 4 && format == 32) {
+			Monitor *m = c->mon;
+			m->strut[0] = data[0];  /* left */
+			m->strut[1] = data[1];  /* right */
+			m->strut[2] = data[2];  /* top */
+			m->strut[3] = data[3];  /* bottom */
+			/* Set partial strut extents to full screen for basic strut */
+			m->strut[4] = 0;        /* left_start_y */
+			m->strut[5] = m->mh;    /* left_end_y */
+			m->strut[6] = 0;        /* right_start_y */
+			m->strut[7] = m->mh;    /* right_end_y */
+			m->strut[8] = 0;        /* top_start_x */
+			m->strut[9] = m->mw;    /* top_end_x */
+			m->strut[10] = 0;       /* bottom_start_x */
+			m->strut[11] = m->mw;   /* bottom_end_x */
+		}
+		XFree(data);
+		return;
+	}
+}
+
 void setup(void) {
   int i;
   XSetWindowAttributes wa;
@@ -2930,6 +2997,8 @@ void setup(void) {
   netatom[NetWMWindowTypeDialog] =
       XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DIALOG", False);
   netatom[NetWMWindowTypeDock] = XInternAtom(dpy, "_NET_WM_WINDOW_TYPE_DOCK", False);
+  netatom[NetWMStrut] = XInternAtom(dpy, "_NET_WM_STRUT", False);
+  netatom[NetWMStrutPartial] = XInternAtom(dpy, "_NET_WM_STRUT_PARTIAL", False);
   netatom[NetClientList] = XInternAtom(dpy, "_NET_CLIENT_LIST", False);
   xatom[Manager] = XInternAtom(dpy, "MANAGER", False);
   xatom[Xembed] = XInternAtom(dpy, "_XEMBED", False);
@@ -3260,6 +3329,7 @@ void unfocus(Client *c, int setfocus) {
 void unmanage(Client *c, int destroyed) {
   Monitor *m = c->mon;
   XWindowChanges wc;
+  int had_strut = (m->strut[0] || m->strut[1] || m->strut[2] || m->strut[3]);
 
   detach(c);
   detachstack(c);
@@ -3279,6 +3349,11 @@ void unmanage(Client *c, int destroyed) {
   }
   free(c);
   focus(NULL);
+
+  if (had_strut) {
+  	updatestruts();
+  	arrange(NULL);
+  }
   updateclientlist();
   arrange(m);
 }
@@ -3299,6 +3374,21 @@ void unmapnotify(XEvent *e) {
     updatesystray();
   }
 }
+void
+updatestruts(void)
+{
+	Monitor *m;
+	Client *c;
+	
+	for (m = mons; m; m = m->next) {
+		memset(m->strut, 0, sizeof(m->strut));
+		for (c = m->clients; c; c = c->next) {
+			setstrut(c);
+		}
+		updatebarpos(m);
+	}
+}
+
 
 void updatebars(void) {
   unsigned int w;
@@ -3449,6 +3539,18 @@ int updategeom(void) {
 			m->mw = m->ww = unique[i].width;
 			m->mh = m->wh = unique[i].height;
 			updatebarpos(m);
+
+				/* Apply struts to working area */
+				if (m->strut[0]) /* left */
+					m->wx += m->strut[0], m->ww -= m->strut[0];
+				if (m->strut[1]) /* right */
+					m->ww -= m->strut[1];
+				if (m->strut[2]) /* top */
+					m->wy += m->strut[2], m->wh -= m->strut[2];
+				if (m->strut[3]) /* bottom */
+					m->wh -= m->strut[3];
+				if (m->showbar && m->topbar)
+					m->wy = m->my + bh + m->strut[2];
  		}
     /* removed monitors if n > nn */
     for (i = nn; i < n; i++) {
@@ -3476,6 +3578,17 @@ int updategeom(void) {
       mons->mw = mons->ww = sw;
       mons->mh = mons->wh = sh;
       updatebarpos(mons);
+        /* Apply struts to working area */
+        if (mons->strut[0]) /* left */
+        	mons->wx += mons->strut[0], mons->ww -= mons->strut[0];
+        if (mons->strut[1]) /* right */
+        	mons->ww -= mons->strut[1];
+        if (mons->strut[2]) /* top */
+        	mons->wy += mons->strut[2], mons->wh -= mons->strut[2];
+        if (mons->strut[3]) /* bottom */
+        	mons->wh -= mons->strut[3];
+        if (mons->showbar && mons->topbar)
+        	mons->wy = mons->my + bh + mons->strut[2];
     }
   }
   if (dirty) {
